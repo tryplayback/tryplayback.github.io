@@ -44,12 +44,13 @@
       i === (active + N - 1) % N ? 'left' :
       i === (active + 1) % N ? 'right' :
       i === (active + 2) % N ? 'back' : 'hidden';
+    // consistent filter lists (blur + drop-shadow) so the centre is explicitly blur(0) and transitions cleanly
     const styleFor = role => { const m = mobile; switch (role) {
-      case 'center': return { transform:`translateX(-50%) scale(${m?1.12:1.18})`, filter:'drop-shadow(0 30px 42px rgba(0,0,0,.32))', opacity:1, zIndex:20, left:'50%',     height:m?'42%':'60%', bottom:m?'24%':'9%' };
-      case 'left':   return { transform:'translateX(-50%) scale(1)', filter:'blur(2px)', opacity:.82, zIndex:10, left:m?'16%':'29%', height:m?'18%':'27%', bottom:m?'34%':'16%' };
-      case 'right':  return { transform:'translateX(-50%) scale(1)', filter:'blur(2px)', opacity:.82, zIndex:10, left:m?'84%':'71%', height:m?'18%':'27%', bottom:m?'34%':'16%' };
-      case 'back':   return { transform:'translateX(-50%) scale(1)', filter:'blur(4px)', opacity:.95, zIndex:5,  left:'50%',         height:m?'14%':'21%', bottom:m?'34%':'16%' };
-      default:       return { transform:'translateX(-50%) scale(.7)', filter:'blur(6px)', opacity:0,  zIndex:1,  left:'50%',         height:m?'14%':'21%', bottom:m?'34%':'16%' };
+      case 'center': return { transform:`translateX(-50%) scale(${m?1.12:1.18})`, filter:'blur(0px) drop-shadow(0 30px 42px rgba(0,0,0,.32))', opacity:1, zIndex:20, left:'50%',     height:m?'42%':'60%', bottom:m?'24%':'9%' };
+      case 'left':   return { transform:'translateX(-50%) scale(1)', filter:'blur(2px) drop-shadow(0 14px 22px rgba(0,0,0,.18))', opacity:.82, zIndex:10, left:m?'16%':'29%', height:m?'18%':'27%', bottom:m?'34%':'16%' };
+      case 'right':  return { transform:'translateX(-50%) scale(1)', filter:'blur(2px) drop-shadow(0 14px 22px rgba(0,0,0,.18))', opacity:.82, zIndex:10, left:m?'84%':'71%', height:m?'18%':'27%', bottom:m?'34%':'16%' };
+      case 'back':   return { transform:'translateX(-50%) scale(1)', filter:'blur(4px) drop-shadow(0 10px 18px rgba(0,0,0,.15))', opacity:.95, zIndex:5,  left:'50%',         height:m?'14%':'21%', bottom:m?'34%':'16%' };
+      default:       return { transform:'translateX(-50%) scale(.7)', filter:'blur(6px) drop-shadow(0 0 0 rgba(0,0,0,0))', opacity:0,  zIndex:1,  left:'50%',         height:m?'14%':'21%', bottom:m?'34%':'16%' };
     } };
     const fitGhost = () => {                       // scale the ghost word so it never runs off-screen
       finGhost.style.fontSize = '';
@@ -63,8 +64,9 @@
       finGhostT.textContent = f.name; fitGhost();
       if (finNameEl) finNameEl.textContent = f.label;
       items.forEach((el, i) => { const s = styleFor(roleOf(i));
-        el.style.transform = s.transform; el.style.filter = s.filter; el.style.opacity = s.opacity;
-        el.style.zIndex = s.zIndex; el.style.left = s.left; el.style.height = s.height; el.style.bottom = s.bottom; });
+        el.style.transform = s.transform; el.style.opacity = s.opacity;
+        el.style.zIndex = s.zIndex; el.style.left = s.left; el.style.height = s.height; el.style.bottom = s.bottom;
+        el.firstElementChild.style.filter = s.filter; });   // filter on the <img>, not the transformed item
     };
     const bump = () => { if (reduce) return; finGhost.classList.remove('anim'); void finGhost.offsetWidth; finGhost.classList.add('anim'); };
     const go = dir => { if (busy) return; busy = true;
@@ -203,11 +205,22 @@
     btn.addEventListener('pointerleave', () => { btn.style.transform = ''; });
   });
 
-  /* ---------- 7. RESERVE form ---------- */
+  /* ---------- 7. RESERVE form (emails submissions via Web3Forms) ----------
+     SETUP: go to https://web3forms.com, enter arjunkalbag07@gmail.com, and it emails
+     you a free access key. Paste it below, then commit & push. Until then the form
+     falls back to the demo confirmation so the button still works. */
+  const WEB3FORMS_KEY = 'YOUR_ACCESS_KEY_HERE';
+
   const form = $('#reserveForm'), input = $('#email'), msg = $('#emailHelp'), submitBtn = $('#reserveBtn');
   const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (form) {
-    form.addEventListener('submit', e => {
+    const done = (ok, text, v) => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = ok ? 'Reserved ✓' : 'Try again';
+      msg.textContent = text; msg.className = 'field__msg ' + (ok ? 'ok' : 'error');
+      if (ok && v) input.value = '';
+    };
+    form.addEventListener('submit', async e => {
       e.preventDefault();
       const v = input.value.trim();
       if (!EMAIL.test(v)) {
@@ -218,11 +231,30 @@
       input.removeAttribute('aria-invalid');
       submitBtn.disabled = true; submitBtn.textContent = 'Reserving…';
       msg.textContent = 'Securing your spot…'; msg.className = 'field__msg';
-      setTimeout(() => {
-        submitBtn.disabled = false; submitBtn.textContent = 'Reserved ✓';
-        msg.textContent = `You’re on the list. We’ll write to ${v} when it ships.`;
-        msg.className = 'field__msg ok'; input.value = '';
-      }, 900);
+
+      if (!WEB3FORMS_KEY || WEB3FORMS_KEY === 'YOUR_ACCESS_KEY_HERE') {
+        console.warn('[Playback] Form not connected yet — add your Web3Forms key (WEB3FORMS_KEY) in app.js.');
+        setTimeout(() => done(true, `You’re on the list. We’ll write to ${v} when it ships.`, v), 800);
+        return;
+      }
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            access_key: WEB3FORMS_KEY,
+            subject: 'New Playback reservation',
+            from_name: 'Playback waitlist',
+            email: v,
+            message: `New reservation request from ${v}`,
+          }),
+        });
+        const data = await res.json();
+        if (data.success) done(true, `You’re on the list. We’ll write to ${v} when it ships.`, v);
+        else done(false, 'Hmm, that didn’t go through — please try again.');
+      } catch {
+        done(false, 'Network error — please try again.');
+      }
     });
     input.addEventListener('input', () => {
       if (input.getAttribute('aria-invalid') === 'true' && EMAIL.test(input.value.trim())) {

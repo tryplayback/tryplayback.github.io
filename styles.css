@@ -186,12 +186,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .fin-ghost.anim{animation:finGhostIn .45s cubic-bezier(.4,0,.2,1)}
 
 .fin-carousel{position:absolute;inset:0;z-index:3}
-.fin-item{position:absolute;will-change:transform,filter,opacity,left,height,bottom;cursor:pointer;
-  transition:transform .65s cubic-bezier(.4,0,.2,1),filter .65s cubic-bezier(.4,0,.2,1),
+.fin-item{position:absolute;will-change:transform,opacity;cursor:pointer;
+  transition:transform .65s cubic-bezier(.4,0,.2,1),
     opacity .65s cubic-bezier(.4,0,.2,1),left .65s cubic-bezier(.4,0,.2,1),
     height .65s cubic-bezier(.4,0,.2,1),bottom .65s cubic-bezier(.4,0,.2,1)}
-.fin-carousel.booting .fin-item{transition:none}
-.fin-item img{height:100%;width:auto;display:block;object-fit:contain;object-position:bottom center;pointer-events:none}
+.fin-carousel.booting .fin-item,.fin-carousel.booting .fin-item img{transition:none}
+/* filter lives on the img (not the transformed item) so mobile Safari keeps the centre sharp */
+.fin-item img{height:100%;width:auto;display:block;object-fit:contain;object-position:bottom center;pointer-events:none;
+  transition:filter .65s cubic-bezier(.4,0,.2,1)}
 
 .fin-panel{position:absolute;bottom:clamp(24px,5vh,56px);left:var(--gut);z-index:60;max-width:340px;color:currentColor}
 .fin-name{font-family:var(--f-display);font-weight:600;font-size:1.5rem;letter-spacing:-.01em;margin-bottom:8px}

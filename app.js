@@ -209,7 +209,7 @@
      SETUP: go to https://web3forms.com, enter arjunkalbag07@gmail.com, and it emails
      you a free access key. Paste it below, then commit & push. Until then the form
      falls back to the demo confirmation so the button still works. */
-  const WEB3FORMS_KEY = 'YOUR_ACCESS_KEY_HERE';
+  const WEB3FORMS_KEY = '22bc5667-c273-4d45-a570-00ff77de8270';
 
   const form = $('#reserveForm'), input = $('#email'), msg = $('#emailHelp'), submitBtn = $('#reserveBtn');
   const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

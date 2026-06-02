@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Playback — See what you hear.</title>
+<meta name="description" content="Playback is a small display for your desk that shows the song, artist, runtime and album art of whatever's playing — with minimalist controls. For people who love their music in view." />
+
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-accent="coral">
+
+<div class="scrollbar" id="scrollbar" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="grid-bg" aria-hidden="true"></div>
+
+<!-- ============ LOADER ============ -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__inner">
+    <pre class="loader__ascii" id="loaderAscii"></pre>
+    <div class="loader__row">
+      <span class="loader__label">LOADING THE EXPERIENCE</span>
+      <span class="loader__pct" id="loaderPct">000</span>
+    </div>
+    <div class="loader__bar"><span id="loaderFill"></span></div>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#top" aria-label="Playback home">
+    <span class="nav__mark" aria-hidden="true"><span class="dot"></span><span class="dot"></span></span>
+    Playback<sup>&reg;</sup>
+  </a>
+  <nav class="nav__pill" aria-label="Primary">
+    <a href="#device">The Device</a>
+    <a href="#finishes">Finishes</a>
+    <a href="#creator">The Creator</a>
+  </nav>
+  <div class="nav__right">
+    <span class="nav__now" aria-hidden="true"><i></i> Now playing</span>
+    <a href="#reserve" class="btn btn--ink magnetic" data-magnetic>Reserve</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow reveal" data-d="0">A small display for the music you love</p>
+        <h1 class="hero__title reveal" data-d="1">
+          <span class="playword" data-text="PLAYBACK">PLAYBACK</span>
+        </h1>
+        <p class="hero__lede reveal" data-d="3">
+          See what you hear. A little screen for your desk that shows the song,
+          the artist, the runtime and the album art of whatever's playing — nothing more,
+          nothing in the way.
+        </p>
+        <div class="hero__cta reveal" data-d="4">
+          <a href="#reserve" class="btn btn--accent magnetic" data-magnetic>Reserve yours &nbsp;&rarr;</a>
+          <a href="#device" class="btn btn--ghost">How it works</a>
+        </div>
+        <p class="hero__cue reveal" data-d="5">Scroll &darr;</p>
+      </div>
+
+      <div class="hero__stage" data-parallax-stage>
+        <div class="orb orb--1" data-depth="0.32" aria-hidden="true"></div>
+        <div class="orb orb--2" data-depth="0.6" aria-hidden="true"></div>
+        <img class="product product--hero" src="assets/showcase.png" width="1208" height="1500"
+             alt="The Playback device, its screen showing Strobe by deadmau5 with vivid album art"
+             data-depth="0.14" data-tilt fetchpriority="high" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__skew" id="marqueeSkew">
+      <div class="marquee__track">
+        <span>See what you hear</span><span class="ast">&lowast;</span>
+        <span>Now playing</span><span class="ast">&lowast;</span>
+        <span>Album art, alive</span><span class="ast">&lowast;</span>
+        <span>The song on your desk</span><span class="ast">&lowast;</span>
+        <span>See what you hear</span><span class="ast">&lowast;</span>
+        <span>Now playing</span><span class="ast">&lowast;</span>
+        <span>Album art, alive</span><span class="ast">&lowast;</span>
+        <span>The song on your desk</span><span class="ast">&lowast;</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ THE DEVICE ============ -->
+  <section class="device-sec" id="device">
+    <div class="device-sec__grid">
+      <figure class="device-sec__media" data-parallax data-speed="0.06" data-scale="0.06">
+        <div class="device-sec__glow" aria-hidden="true"></div>
+        <div class="dvm-frame" data-tilt-soft>
+          <img class="product" src="assets/showcase.png" width="1208" height="1500"
+               alt="Playback playing Strobe by deadmau5, vivid pink and blue album art filling the screen" loading="lazy" />
+          <div class="dvm" id="dvm" aria-hidden="true"></div>
+        </div>
+      </figure>
+
+      <div class="device-sec__content">
+        <span class="tag reveal">What is it</span>
+        <h2 class="device-sec__head reveal" data-d="1">A quiet screen that does <em>one</em> thing &mdash; beautifully.</h2>
+        <p class="device-sec__body reveal" data-d="2">
+          Playback connects to your phone, laptop or speaker over AirPlay, Bluetooth or cable,
+          and mirrors whatever's playing as a calm, glanceable display. No feeds. No notifications.
+          Just the music, in view.
+        </p>
+        <ul class="device-sec__list">
+          <li class="reveal" data-d="0"><span class="num">01</span><div><h3>Album art, full bleed</h3><p>The cover fills the panel at native resolution.</p></div></li>
+          <li class="reveal" data-d="1"><span class="num">02</span><div><h3>Song, artist &amp; runtime</h3><p>An honest progress bar. Nothing you read twice.</p></div></li>
+          <li class="reveal" data-d="2"><span class="num">03</span><div><h3>A single aluminium dial</h3><p>Tap to play, flick to skip, turn for the rest.</p></div></li>
+          <li class="reveal" data-d="3"><span class="num">04</span><div><h3>Works with everything</h3><p>If it makes sound, it shows up.</p></div></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- craftsmanship detail tiles — B&W to colour on hover -->
+    <div class="details">
+      <figure class="detail reveal">
+        <div class="detail__img"><img src="assets/detail-dial.png" width="1100" height="1100" alt="Macro photograph of the knurled aluminium dial" loading="lazy" /></div>
+        <figcaption><span class="num">A</span> The dial &mdash; knurled aluminium, weighted so it keeps spinning after you let go.</figcaption>
+      </figure>
+      <figure class="detail reveal" data-d="1">
+        <div class="detail__img"><img src="assets/detail-bezel.png" width="1100" height="1100" alt="Macro photograph of the chamfered bezel meeting the laminated display" loading="lazy" /></div>
+        <figcaption><span class="num">B</span> The bezel &mdash; one continuous chamfer, polished to catch the light at the edge of the glass.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ FINISHES — colourway carousel ============ -->
+  <section class="finishes" id="finishes">
+    <span class="fin-tag">Six finishes</span>
+    <div class="fin-ghost" id="finGhost" aria-hidden="true"><span>CORAL</span></div>
+    <div class="fin-carousel booting" id="finCarousel" aria-label="Finish carousel"></div>
+
+    <div class="fin-panel">
+      <p class="fin-name" id="finName">Coral</p>
+      <p class="fin-desc">Milled from a single block of anodised aluminium. Six finishes,
+      one obsession with the details — pick the one that disappears into your desk.</p>
+      <div class="fin-nav">
+        <button class="fin-btn" id="finPrev" aria-label="Previous finish">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <button class="fin-btn" id="finNext" aria-label="Next finish">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <a class="fin-cta" href="#reserve">Reserve yours
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </section>
+
+  <!-- ============ THE CREATOR ============ -->
+  <section class="creator" id="creator">
+    <div class="creator__grid">
+      <figure class="creator__photo reveal">
+        <img src="assets/creator.jpg" width="900" height="900" alt="Arjun Kalbag, the creator of Playback" loading="lazy" />
+      </figure>
+      <div class="creator__copy">
+        <span class="tag reveal">The Creator</span>
+        <h2 class="creator__head reveal" data-d="1">Arjun Kalbag</h2>
+        <p class="creator__body reveal" data-d="2">
+          I&rsquo;m a Computer Engineering and Economics student at Washington University in St. Louis
+          with a strong interest in complex systems and the intersection of technology and business.
+          My experience spans hardware and software development, data analysis, and market evaluation,
+          allowing me to bridge technical innovation with strategic growth. Outside of academics, I enjoy
+          producing music, reading, and building side projects like this.
+          <a class="creator__link" href="https://arjunkalbag.xyz" target="_blank" rel="noopener">More about me here.</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER + RESERVE ============ -->
+<footer class="foot" id="reserve">
+  <div class="foot__cta">
+    <span class="tag tag--light reveal">Coming soon</span>
+    <h2 class="foot__head reveal" data-d="1">Be first in line.</h2>
+    <p class="foot__sub reveal" data-d="2">Reserve a unit from the first run. No payment now — just your spot,
+    and a note when it ships this autumn.</p>
+    <form class="foot__form reveal" data-d="3" id="reserveForm" novalidate>
+      <div class="field">
+        <label for="email">Email address</label>
+        <div class="field__row">
+          <input type="email" id="email" name="email" inputmode="email" autocomplete="email"
+                 placeholder="you@studio.com" aria-describedby="emailHelp" required />
+          <button type="submit" class="btn btn--accent magnetic" data-magnetic id="reserveBtn">Reserve</button>
+        </div>
+        <p class="field__msg" id="emailHelp">We&rsquo;ll only email you once, when it&rsquo;s real.</p>
+      </div>
+    </form>
+  </div>
+
+  <div class="foot__base">
+    <a class="foot__brand" href="#top">
+      <span class="nav__mark" aria-hidden="true"><span class="dot"></span><span class="dot"></span></span>
+      Playback<sup>&reg;</sup>
+    </a>
+    <span class="foot__tag">See what you hear.</span>
+    <span class="foot__time" id="footClock">--:--:--</span>
+  </div>
+  <div class="foot__wordmark" aria-hidden="true">PLAYBACK</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

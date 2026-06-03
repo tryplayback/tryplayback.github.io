@@ -9,6 +9,37 @@
   const fine = matchMedia('(pointer:fine)').matches;
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
+  /* ---------- 0. GLOBAL CUSTOM CURSOR ---------- */
+  if (fine) {
+    document.documentElement.classList.add('cursor-on');
+    const cursor = document.createElement('div');
+    cursor.className = 'cursor hide';
+    cursor.innerHTML = '<div class="cursor__ring"></div><div class="cursor__in"></div>';
+    document.body.appendChild(cursor);
+    const INTERACTIVE = 'a,button,input,textarea,select,label,summary,[role="button"],.magnetic,.fin-item,.fin-cta';
+    let mx = -100, my = -100, px = -100, py = -100, moved = false;
+    addEventListener('pointermove', e => {
+      if (e.pointerType === 'touch') return;
+      mx = e.clientX; my = e.clientY; moved = true;
+      const inFilm = !!(e.target.closest && e.target.closest('#film'));   // film section has its own pointer FX
+      cursor.classList.toggle('hide', inFilm);
+      cursor.classList.toggle('is-hover', !inFilm && !!(e.target.closest && e.target.closest(INTERACTIVE)));
+    }, { passive: true });
+    addEventListener('pointerdown', () => {
+      cursor.classList.add('is-down');
+      cursor.classList.remove('click'); void cursor.offsetWidth; cursor.classList.add('click');  // replay ripple
+    });
+    addEventListener('pointerup', () => cursor.classList.remove('is-down'));
+    document.addEventListener('mouseleave', () => cursor.classList.add('hide'));
+    document.addEventListener('mouseenter', () => { if (moved) cursor.classList.remove('hide'); });
+    const k = reduce ? 1 : 0.3;
+    (function move() {
+      px += (mx - px) * k; py += (my - py) * k;
+      cursor.style.transform = `translate3d(${px.toFixed(2)}px,${py.toFixed(2)}px,0)`;
+      requestAnimationFrame(move);
+    })();
+  }
+
   /* ---------- 1. REVEAL on scroll ---------- */
   $$('.reveal').forEach(n => { if (n.dataset.d) n.style.setProperty('--d', n.dataset.d); });
   if ('IntersectionObserver' in window && !reduce) {

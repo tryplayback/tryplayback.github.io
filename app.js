@@ -345,9 +345,60 @@
       })();
     }
 
+    // pointer callout — "Product Video" + straight leader line appear when the cursor is
+    // AROUND the player; over the player nothing shows but the colour blob. Native cursor hidden.
+    const fSec = $('#film'), ptr = $('.film__pointer'), cur = $('.film__cursor'), lead = $('.film__lead');
+    if (fSec && ptr && cur && lead && fine && !reduce) {
+      fSec.classList.add('is-live');
+      let inSec = false, started = false, tx = 0, ty = 0, sx = 0, sy = 0;
+      fSec.addEventListener('pointermove', e => {
+        const sr = fSec.getBoundingClientRect();
+        tx = e.clientX - sr.left; ty = e.clientY - sr.top;
+        if (!started) { sx = tx; sy = ty; started = true; }
+        inSec = true;
+      });
+      fSec.addEventListener('pointerleave', () => { inSec = false; });
+      (function follow() {
+        if (inSec) {
+          sx += (tx - sx) * 0.2; sy += (ty - sy) * 0.2;
+          const sr = fSec.getBoundingClientRect(), fr = filmFrame.getBoundingClientRect();
+          const fl = fr.left - sr.left, ft = fr.top - sr.top, frt = fl + fr.width, fbt = ft + fr.height;
+          const over = tx >= fl && tx <= frt && ty >= ft && ty <= fbt;   // hit-test the real pointer
+          if (over || filmFrame.classList.contains('is-fs')) {
+            ptr.classList.remove('show');
+          } else {
+            ptr.classList.add('show');
+            cur.style.left = sx + 'px'; cur.style.top = sy + 'px';
+            const ex = clamp(sx, fl, frt), ey = clamp(sy, ft, fbt);   // nearest point on the player edge
+            const dx = sx - ex, dy = sy - ey;
+            lead.style.left = ex + 'px'; lead.style.top = ey + 'px';
+            lead.style.width = Math.hypot(dx, dy) + 'px';
+            lead.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+          }
+        } else {
+          ptr.classList.remove('show');
+        }
+        requestAnimationFrame(follow);
+      })();
+    }
+
     if ('IntersectionObserver' in window) {   // pause when scrolled away
       new IntersectionObserver(es => es.forEach(en => { if (!en.isIntersecting && !video.paused) video.pause(); }), { threshold: 0.25 }).observe(filmFrame);
     }
+  }
+
+  /* ---------- 8d. DETAIL TILES — slight cursor tilt + lift (dial & bezel macros) ---------- */
+  if (fine && !reduce) {
+    $$('.detail__img').forEach(box => {
+      const img = box.querySelector('img');
+      if (!img) return;
+      box.addEventListener('pointermove', e => {
+        const r = box.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+        img.style.transform = `rotateY(${(px * 9).toFixed(2)}deg) rotateX(${(-py * 9).toFixed(2)}deg) translateY(-7px) scale(1.04)`;
+      });
+      box.addEventListener('pointerleave', () => { img.style.transform = ''; });
+    });
   }
 
   /* ---------- 9. LOADER ---------- */

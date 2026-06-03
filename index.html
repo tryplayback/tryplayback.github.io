@@ -154,7 +154,6 @@
             <div class="dv-side dv-side--left" aria-hidden="true"></div>
             <div class="dv-side dv-side--right" aria-hidden="true"></div>
             <div class="dv-back" aria-hidden="true"></div>
-            <div class="dv-dial" aria-hidden="true"><i></i></div>
             <div class="film__frame" id="filmFrame">
               <video class="film__video" id="filmVideo" playsinline loop preload="metadata" poster="assets/playback-film-poster.jpg">
                 <source src="assets/playback-film.mp4" type="video/mp4" />
@@ -184,7 +183,12 @@
           </div>
         </div>
       </figure>
-      <div class="film__head reveal" data-d="1"><h2>Product&nbsp;Video</h2></div>
+    </div>
+    <!-- pointer callout: shows when the cursor is AROUND the player; a straight line
+         points to the nearest edge. Over the player itself only the colour blob shows. -->
+    <div class="film__pointer" aria-hidden="true">
+      <span class="film__lead"></span>
+      <span class="film__cursor">Product&nbsp;Video</span>
     </div>
   </section>
 

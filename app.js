@@ -264,11 +264,91 @@
     });
   }
 
-  /* ---------- 8. FOOTER clock ---------- */
+  /* ---------- 8. FOOTER clock (Eastern Time) ---------- */
   const clock = $('#footClock');
-  if (clock) { const t = () => { const d = new Date();
-    clock.textContent = [d.getHours(), d.getMinutes(), d.getSeconds()].map(n => String(n).padStart(2, '0')).join(':'); };
-    t(); setInterval(t, 1000); }
+  if (clock) {
+    const t = () => {
+      const time = new Date().toLocaleTimeString('en-US', {
+        timeZone: 'America/New_York', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit',
+      });
+      clock.textContent = time + ' EST';
+    };
+    t(); setInterval(t, 1000);
+  }
+
+  /* ---------- 8b. FOOTER wordmark — scale so PLAYBACK always fits ---------- */
+  const fw = $('.foot__wordmark'), fwt = fw && fw.firstElementChild;
+  if (fwt) {
+    const fitFoot = () => {
+      fw.style.fontSize = '';
+      const avail = innerWidth * 0.96, w = fwt.getBoundingClientRect().width;
+      if (w > avail) fw.style.fontSize = (parseFloat(getComputedStyle(fw).fontSize) * avail / w) + 'px';
+    };
+    fitFoot();
+    addEventListener('resize', fitFoot);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitFoot);
+  }
+
+  /* ---------- 8c. FILM — product video player ---------- */
+  const filmFrame = $('#filmFrame'), video = $('#filmVideo'), filmScene = $('#filmScene'), filmDevice = $('#filmDevice');
+  if (filmFrame && video) {
+    const fill = $('#filmFill'), toggle = $('#filmToggle'), muteBtn = $('#filmMute'), track = $('#filmTrack'), big = $('#filmBig');
+    const playPause = () => { if (video.paused) video.play().catch(() => {}); else video.pause(); };
+    const syncMute = () => muteBtn.classList.toggle('is-muted', video.muted);
+    video.addEventListener('play', () => filmFrame.classList.add('playing'));
+    video.addEventListener('pause', () => filmFrame.classList.remove('playing'));
+    video.addEventListener('ended', () => filmFrame.classList.remove('playing'));
+    filmFrame.addEventListener('click', e => { if (!e.target.closest('.film__controls')) playPause(); });
+    big.addEventListener('click', e => { e.stopPropagation(); playPause(); });
+    toggle.addEventListener('click', e => { e.stopPropagation(); playPause(); });
+    muteBtn.addEventListener('click', e => { e.stopPropagation(); video.muted = !video.muted; syncMute(); });
+    video.addEventListener('timeupdate', () => { if (video.duration) fill.style.transform = `scaleX(${(video.currentTime / video.duration).toFixed(4)})`; });
+    track.addEventListener('click', e => { e.stopPropagation(); const r = track.getBoundingClientRect(); if (video.duration) video.currentTime = clamp((e.clientX - r.left) / r.width, 0, 1) * video.duration; });
+    syncMute();
+
+    // fullscreen
+    const fsBtn = $('#filmFs');
+    const fsToggle = () => {
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+      if (fsEl) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      else (filmFrame.requestFullscreen || filmFrame.webkitRequestFullscreen).call(filmFrame);
+    };
+    if (fsBtn) fsBtn.addEventListener('click', e => { e.stopPropagation(); fsToggle(); });
+    const onFsChange = () => {
+      const fs = (document.fullscreenElement || document.webkitFullscreenElement) === filmFrame;
+      filmFrame.classList.toggle('is-fs', fs);
+      if (fs && filmDevice) filmDevice.style.transform = 'rotateX(0deg)';
+    };
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
+
+    // smooth 3D mouse-tracking rotation (reveals the machined aluminium sides) + screen spotlight
+    if (!reduce && filmDevice && filmScene) {
+      const BASE_RX = -7;
+      let tx = 0, ty = 0, cx = 0, cy = 0;
+      if (fine) {
+        filmScene.addEventListener('pointermove', e => {
+          const r = filmScene.getBoundingClientRect();
+          tx = (e.clientX - r.left) / r.width - 0.5;
+          ty = (e.clientY - r.top) / r.height - 0.5;
+          const fr = filmFrame.getBoundingClientRect();
+          filmFrame.style.setProperty('--mx', (((e.clientX - fr.left) / fr.width) * 100).toFixed(1) + '%');
+          filmFrame.style.setProperty('--my', (((e.clientY - fr.top) / fr.height) * 100).toFixed(1) + '%');
+        });
+        filmScene.addEventListener('pointerleave', () => { tx = 0; ty = 0; });
+      }
+      (function spin() {
+        cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
+        if (!filmFrame.classList.contains('is-fs'))
+          filmDevice.style.transform = `rotateX(${(BASE_RX - cy * 12).toFixed(2)}deg) rotateY(${(cx * 24).toFixed(2)}deg)`;
+        requestAnimationFrame(spin);
+      })();
+    }
+
+    if ('IntersectionObserver' in window) {   // pause when scrolled away
+      new IntersectionObserver(es => es.forEach(en => { if (!en.isIntersecting && !video.paused) video.pause(); }), { threshold: 0.25 }).observe(filmFrame);
+    }
+  }
 
   /* ---------- 9. LOADER ---------- */
   const loader = $('#loader'), lFill = $('#loaderFill'), lPct = $('#loaderPct'), lAscii = $('#loaderAscii');

@@ -6,6 +6,10 @@
 <title>Playback — See what you hear.</title>
 <meta name="description" content="Playback is a small display for your desk that shows the song, artist, runtime and album art of whatever's playing — with minimalist controls. For people who love their music in view." />
 
+<link rel="icon" type="image/png" href="assets/favicon.png" />
+<link rel="apple-touch-icon" href="assets/playback-icon.png" />
+<meta name="theme-color" content="#f1ece0" />
+
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -139,6 +143,51 @@
     </div>
   </section>
 
+  <!-- ============ FILM — product video ============ -->
+  <section class="film" id="film">
+    <div class="film__grid">
+      <figure class="film__stage reveal">
+        <div class="film__scene" id="filmScene">
+          <div class="film__device" id="filmDevice">
+            <div class="dv-side dv-side--top" aria-hidden="true"></div>
+            <div class="dv-side dv-side--bottom" aria-hidden="true"></div>
+            <div class="dv-side dv-side--left" aria-hidden="true"></div>
+            <div class="dv-side dv-side--right" aria-hidden="true"></div>
+            <div class="dv-back" aria-hidden="true"></div>
+            <div class="dv-dial" aria-hidden="true"><i></i></div>
+            <div class="film__frame" id="filmFrame">
+              <video class="film__video" id="filmVideo" playsinline loop preload="metadata" poster="assets/playback-film-poster.jpg">
+                <source src="assets/playback-film.mp4" type="video/mp4" />
+              </video>
+              <div class="film__scrim" aria-hidden="true"></div>
+              <div class="film__gloss" aria-hidden="true"></div>
+              <div class="film__spot" aria-hidden="true"></div>
+              <button class="film__big" id="filmBig" aria-label="Play video">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7L8 5z"/></svg>
+              </button>
+              <div class="film__controls">
+                <button class="film__btn film__toggle" id="filmToggle" aria-label="Play or pause">
+                  <svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7L8 5z"/></svg>
+                  <svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+                </button>
+                <div class="film__track" id="filmTrack"><span id="filmFill"></span></div>
+                <button class="film__btn film__mute" id="filmMute" aria-label="Mute or unmute">
+                  <svg class="ic-sound" viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 5V4L8 9H4zm12 3a4 4 0 0 0-2.2-3.6v7.2A4 4 0 0 0 16 12zm-2.2-7.4v2.06a6 6 0 0 1 0 10.68v2.06A8 8 0 0 0 13.8 4.6z"/></svg>
+                  <svg class="ic-muted" viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16 9l5 5m0-5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+                </button>
+                <button class="film__btn film__fs" id="filmFs" aria-label="Fullscreen">
+                  <svg class="ic-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V5a1 1 0 0 1 1-1h4M20 9V5a1 1 0 0 0-1-1h-4M4 15v4a1 1 0 0 0 1 1h4M20 15v4a1 1 0 0 1-1 1h-4"/></svg>
+                  <svg class="ic-compress" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 4v3a1 1 0 0 1-1 1H5M15 4v3a1 1 0 0 0 1 1h3M9 20v-3a1 1 0 0 0-1-1H5M15 20v-3a1 1 0 0 1 1-1h3"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+      <div class="film__head reveal" data-d="1"><h2>Product&nbsp;Video</h2></div>
+    </div>
+  </section>
+
   <!-- ============ FINISHES — colourway carousel ============ -->
   <section class="finishes" id="finishes">
     <span class="fin-tag">Six finishes</span>
@@ -215,7 +264,7 @@
     <span class="foot__tag">See what you hear.</span>
     <span class="foot__time" id="footClock">--:--:--</span>
   </div>
-  <div class="foot__wordmark" aria-hidden="true">PLAYBACK</div>
+  <div class="foot__wordmark" aria-hidden="true"><span>PLAYBACK</span></div>
 </footer>
 
 <script src="app.js"></script>
